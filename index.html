@@ -735,7 +735,7 @@ async function saveToCloud() {
 }
 
 function showTokenPrompt() {
-  const token = prompt('🔑 首次同步需要 GitHub Token\n\n请复制以下 token 并粘贴：\n\n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\n\n（这个 token 存在你的浏览器本地，不会上传到服务器）');
+  const token = prompt('🔑 首次同步需要 GitHub Token\n\n请复制 token 粘贴到下面（找你聊天记录里 ghp_ 开头的那个）：\n\n（token 存在你的浏览器本地，不会上传）');
   if (token && token.trim()) {
     setToken(token.trim());
     saveToCloud();
