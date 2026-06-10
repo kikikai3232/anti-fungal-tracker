@@ -641,10 +641,16 @@
 </div>
 
 <script>
-// ==================== Cloud Sync ====================
-const DATA_URL = 'https://jsonblob.com/api/jsonBlob/019eb236-285f-7aa5-9c7b-bd3c0fb7e05e';
+// ==================== Cloud Sync via GitHub ====================
+const RAW_URL = 'https://raw.githubusercontent.com/kikikai3232/anti-fungal-tracker/main/data.json';
+const API_URL = 'https://api.github.com/repos/kikikai3232/anti-fungal-tracker/contents/data.json';
 let state = null;
+let currentSHA = null;
 let saving = false;
+
+// Token stored in localStorage (not in source code!)
+function getToken() { return localStorage.getItem('gh_sync_token'); }
+function setToken(t) { localStorage.setItem('gh_sync_token', t); }
 
 function defaultState() {
   return {
@@ -662,38 +668,78 @@ function defaultState() {
 
 async function loadFromCloud() {
   try {
-    const resp = await fetch(DATA_URL);
+    const resp = await fetch(RAW_URL + '?t=' + Date.now());
     if (!resp.ok) throw new Error('fetch failed');
     const data = await resp.json();
     state = { ...defaultState(), ...data };
     setSyncStatus('☁️ 已同步', '#81b29a');
   } catch(e) {
-    console.warn('Cloud load failed:', e);
-    state = defaultState();
-    setSyncStatus('⚠️ 离线（数据未同步）', '#f4a261');
+    if (!state) state = defaultState();
+    setSyncStatus('⚠️ 离线', '#f4a261');
   }
   updateUI();
 }
 
 async function saveToCloud() {
+  const token = getToken();
+  if (!token) {
+    showTokenPrompt();
+    return;
+  }
   if (saving) return;
   saving = true;
   setSyncStatus('⏳ 保存中...', '#f2cc8f');
+
+  let sha = currentSHA;
+  if (!sha) {
+    try {
+      const resp = await fetch(API_URL, {
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github+json' }
+      });
+      if (resp.ok) { const info = await resp.json(); sha = info.sha; }
+    } catch(e) {}
+  }
+
   try {
-    const resp = await fetch(DATA_URL, {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+    const body = { message: 'sync ' + new Date().toLocaleString('zh-CN',{timeZone:'Asia/Shanghai'}), content: content };
+    if (sha) body.sha = sha;
+
+    const resp = await fetch(API_URL, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(state),
+      headers: {
+        'Authorization': 'token ' + token,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
     });
+
     if (resp.ok) {
+      const result = await resp.json();
+      currentSHA = result.content.sha;
       setSyncStatus('☁️ 已同步', '#81b29a');
+    } else if (resp.status === 409) {
+      currentSHA = null;
+      await loadFromCloud();
+      saving = false;
+      saveToCloud();
+      return;
     } else {
       setSyncStatus('⚠️ 保存失败', '#e07a5f');
     }
   } catch(e) {
-    setSyncStatus('⚠️ 离线（数据未同步）', '#f4a261');
+    setSyncStatus('⚠️ 离线', '#f4a261');
   }
   saving = false;
+}
+
+function showTokenPrompt() {
+  const token = prompt('🔑 首次同步需要 GitHub Token\n\n请复制以下 token 并粘贴：\n\n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\n\n（这个 token 存在你的浏览器本地，不会上传到服务器）');
+  if (token && token.trim()) {
+    setToken(token.trim());
+    saveToCloud();
+  }
 }
 
 function setSyncStatus(text, color) {
