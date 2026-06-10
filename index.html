@@ -456,6 +456,10 @@
     <span class="icon">🛡️</span>
     <h1>抗马拉色菌作战计划</h1>
     <p class="subtitle">同步治疗 · 用品隔离 · 彻底断根 💪</p>
+    <div style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span id="syncStatus" style="font-size:12px;color:var(--text-muted);">☁️ 加载中...</span>
+      <button onclick="syncNow()" style="font-size:11px;background:none;border:1px solid var(--border);border-radius:12px;padding:3px 10px;cursor:pointer;color:var(--text-muted);">🔄 刷新</button>
+    </div>
   </div>
 
   <!-- Streak Banner -->
@@ -637,45 +641,70 @@
 </div>
 
 <script>
-// ==================== State ====================
-const STORAGE_KEY = 'anti-fungal-tracker-v2';
-
-let state = loadState();
+// ==================== Cloud Sync ====================
+const DATA_URL = 'https://jsonblob.com/api/jsonBlob/019eb236-285f-7aa5-9c7b-bd3c0fb7e05e';
+let state = null;
+let saving = false;
 
 function defaultState() {
   return {
-    phase: 'acute', // 'acute' | 'remission'
+    phase: 'acute',
     currentPerson: 'me',
-
-    // Wash records: { 'YYYY-MM-DD': { me: 'keto'|'selenium'|'mild'|'water', him: ... } }
     washRecords: {},
-
-    // Task completions: { 'YYYY-MM-DD': { taskId: true, ... } }
     taskRecords: {},
-
-    // Bedding records
-    pillowLastChanged: null, // ISO date
+    pillowLastChanged: null,
     bedLastCleaned: null,
     miteLastCleaned: null,
-
-    // Daily check-in records: Set of dates where at least 1 thing was done
     checkedInDates: {},
-
-    // Log
-    activityLog: [], // { date, person, action }
+    activityLog: [],
   };
 }
 
-function loadState() {
+async function loadFromCloud() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch(e) {}
-  return defaultState();
+    const resp = await fetch(DATA_URL);
+    if (!resp.ok) throw new Error('fetch failed');
+    const data = await resp.json();
+    state = { ...defaultState(), ...data };
+    setSyncStatus('☁️ 已同步', '#81b29a');
+  } catch(e) {
+    console.warn('Cloud load failed:', e);
+    state = defaultState();
+    setSyncStatus('⚠️ 离线（数据未同步）', '#f4a261');
+  }
+  updateUI();
 }
 
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+async function saveToCloud() {
+  if (saving) return;
+  saving = true;
+  setSyncStatus('⏳ 保存中...', '#f2cc8f');
+  try {
+    const resp = await fetch(DATA_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(state),
+    });
+    if (resp.ok) {
+      setSyncStatus('☁️ 已同步', '#81b29a');
+    } else {
+      setSyncStatus('⚠️ 保存失败', '#e07a5f');
+    }
+  } catch(e) {
+    setSyncStatus('⚠️ 离线（数据未同步）', '#f4a261');
+  }
+  saving = false;
+}
+
+function setSyncStatus(text, color) {
+  const el = document.getElementById('syncStatus');
+  if (el) { el.textContent = text; el.style.color = color; }
+}
+
+async function syncNow() {
+  setSyncStatus('⏳ 刷新中...', '#f2cc8f');
+  await loadFromCloud();
+  showToast('🔄 数据已刷新！');
 }
 
 // ==================== Helpers ====================
@@ -718,14 +747,14 @@ function calcStreaks() {
 
 function markCheckedIn() {
   state.checkedInDates[today()] = true;
-  saveState();
+  saveToCloud();
   updateUI();
 }
 
 // ==================== Wash ====================
 function switchPerson(person) {
   state.currentPerson = person;
-  saveState();
+  saveToCloud();
   updateWashUI();
 }
 
@@ -819,13 +848,13 @@ function updateBeddingUI() {
   if (bedDays === 0) bedEl.textContent = '今天刚清洗 ✨';
   else bedEl.textContent = `上次清洗 ${bedDays} 天前`;
 
-  saveState();
+  saveToCloud();
 }
 
 // ==================== Phase ====================
 function togglePhase() {
   state.phase = state.phase === 'acute' ? 'remission' : 'acute';
-  saveState();
+  saveToCloud();
   updatePhaseUI();
 }
 
@@ -915,7 +944,7 @@ function updateWashUI() {
     ).join('');
   }
 
-  saveState();
+  saveToCloud();
 }
 
 // ==================== Task UI ====================
@@ -948,7 +977,7 @@ function updateTaskUI() {
       : `已完成 ${done}/${TASKS.length} 项`;
   }
 
-  saveState();
+  saveToCloud();
 }
 
 // ==================== Toast & Celebrate ====================
@@ -993,7 +1022,7 @@ function toggleGuide() {
 function resetAll() {
   if (confirm('确定要重置所有打卡数据吗？此操作不可恢复！')) {
     state = defaultState();
-    saveState();
+    saveToCloud();
     updateUI();
     showToast('🔄 数据已重置，重新开始吧！');
   }
@@ -1010,11 +1039,13 @@ function updateUI() {
 }
 
 // ==================== Init ====================
-updateUI();
+loadFromCloud();
 
 // Auto-reset check: if it's a new day, task UI auto-updates (no old data cleanup needed, we use date-keyed records)
 // Check midnight refresh
-setInterval(() => {
+setInterval(async () => {
+  await loadFromCloud();
+
   // Re-render in case day changed
   updateUI();
 }, 60000);
