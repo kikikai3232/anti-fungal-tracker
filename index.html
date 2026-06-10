@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛡️ 抗马拉色菌作战计划</title>
+<style>
+  /* ========== Reset & Base ========== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #faf7f2;
+    --card: #ffffff;
+    --primary: #e07a5f;
+    --primary-light: #f4e1d8;
+    --accent: #81b29a;
+    --accent-light: #dcece3;
+    --warning: #f2cc8f;
+    --warning-light: #fdf3e2;
+    --text: #3d405b;
+    --text-muted: #8b8c9a;
+    --border: #e8e4df;
+    --shadow: 0 2px 12px rgba(61,64,91,0.06);
+    --shadow-lg: 0 8px 30px rgba(61,64,91,0.10);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-xs: 6px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ========== Layout ========== */
+  .container {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 20px 16px 48px;
+  }
+
+  /* ========== Header ========== */
+  .header {
+    text-align: center;
+    padding: 32px 0 20px;
+  }
+  .header .icon { font-size: 48px; display: block; margin-bottom: 8px; }
+  .header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary), #d4654a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header .subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* ========== Streak Banner ========== */
+  .streak-banner {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-lg);
+  }
+  .streak-row {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 32px;
+  }
+  .streak-item { text-align: center; }
+  .streak-num {
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .streak-label {
+    font-size: 13px;
+    opacity: 0.85;
+    margin-top: 4px;
+  }
+  .streak-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(255,255,255,0.3);
+  }
+  .streak-msg {
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.95;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 8px 16px;
+    display: inline-block;
+  }
+
+  /* ========== Section Card ========== */
+  .section {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .section-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .section-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ========== Person Tabs ========== */
+  .person-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .person-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    border-radius: var(--radius-xs);
+    border: 2px solid var(--border);
+    background: transparent;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-muted);
+  }
+  .person-tab.active {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+
+  /* ========== Wash Day Buttons ========== */
+  .wash-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .wash-btn {
+    padding: 14px 12px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--border);
+    background: var(--card);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    position: relative;
+  }
+  .wash-btn .label {
+    font-size: 14px;
+    font-weight: 700;
+    display: block;
+    color: var(--text);
+  }
+  .wash-btn .desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .wash-btn.checked {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+  .wash-btn.checked .label { color: var(--accent); }
+  .wash-btn.checked::after {
+    content: '✅';
+    position: absolute;
+    top: 6px; right: 8px;
+    font-size: 14px;
+  }
+  .wash-btn:active { transform: scale(0.97); }
+
+  /* Ketoconazole badge */
+  .wash-btn.keto { border-left: 4px solid #e07a5f; }
+  .wash-btn.selenium { border-left: 4px solid #f4a261; }
+  .wash-btn.mild { border-left: 4px solid #81b29a; }
+  .wash-btn.water { border-left: 4px solid #7eb8da; }
+
+  .today-badge {
+    display: inline-block;
+    background: var(--warning);
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  /* ========== Task Checklist ========== */
+  .task-list { display: flex; flex-direction: column; gap: 10px; }
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: #fdfcfb;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .task-item.completed {
+    background: var(--accent-light);
+    border-color: var(--accent);
+  }
+  .task-item .checkbox {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .task-item.completed .checkbox {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .task-item .task-info { flex: 1; }
+  .task-item .task-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .task-item .task-detail {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .task-item.completed .task-name,
+  .task-item.completed .task-detail { color: var(--accent); }
+  .task-item .task-emoji { font-size: 24px; flex-shrink: 0; }
+  .task-item .task-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    background: var(--warning-light);
+    color: #b8860b;
+    flex-shrink: 0;
+  }
+  .task-item.completed .task-badge {
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+
+  /* ========== Progress Ring ========== */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .progress-ring {
+    width: 60px; height: 60px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .progress-ring svg { transform: rotate(-90deg); }
+  .progress-ring circle {
+    fill: none;
+    stroke-width: 5;
+  }
+  .progress-ring .bg { stroke: var(--border); }
+  .progress-ring .fg {
+    stroke: var(--primary);
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.6s ease;
+  }
+  .progress-ring .text {
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--primary);
+  }
+  .progress-info {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* ========== Phase Indicator ========== */
+  .phase-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .phase-badge.acute {
+    background: #fde2e2;
+    color: #c0392b;
+  }
+  .phase-badge.remission {
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+
+  /* ========== Guide Card ========== */
+  .guide-toggle {
+    width: 100%;
+    text-align: left;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .guide-content {
+    padding: 0 16px 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    display: none;
+  }
+  .guide-content.open { display: block; }
+  .guide-content .rule {
+    padding: 8px 12px;
+    background: var(--primary-light);
+    border-radius: var(--radius-xs);
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .guide-content .rule .num {
+    display: inline-block;
+    width: 22px; height: 22px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: 800;
+    margin-right: 8px;
+  }
+
+  /* ========== Celebrate Animation ========== */
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  @keyframes confetti-fall {
+    0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+  .confetti-wrapper {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 999;
+  }
+  .confetti-piece {
+    position: absolute;
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    animation: confetti-fall 2.5s ease-out forwards;
+  }
+  .pop-anim { animation: pop 0.4s ease; }
+
+  /* ========== Toast ========== */
+  .toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+
+  /* ========== Reset Button ========== */
+  .reset-area {
+    text-align: center;
+    margin-top: 24px;
+  }
+  .reset-btn {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 8px;
+  }
+
+  /* ========== Responsive ========== */
+  @media (max-width: 380px) {
+    .container { padding: 12px 10px 40px; }
+    .header h1 { font-size: 22px; }
+    .streak-num { font-size: 32px; }
+    .wash-buttons { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+<div class="confetti-wrapper" id="confetti"></div>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <span class="icon">🛡️</span>
+    <h1>抗马拉色菌作战计划</h1>
+    <p class="subtitle">同步治疗 · 用品隔离 · 彻底断根 💪</p>
+  </div>
+
+  <!-- Streak Banner -->
+  <div class="streak-banner" id="streakBanner">
+    <div class="streak-row">
+      <div class="streak-item">
+        <div class="streak-num" id="streakDays">0</div>
+        <div class="streak-label">累计打卡天数</div>
+      </div>
+      <div class="streak-divider"></div>
+      <div class="streak-item">
+        <div class="streak-num" id="streakConsecutive">0</div>
+        <div class="streak-label">连续打卡</div>
+      </div>
+    </div>
+    <div class="streak-msg" id="streakMsg">🫶 今天开始，一起加油！</div>
+  </div>
+
+  <!-- Phase Status -->
+  <div class="section" style="display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <span class="phase-badge acute" id="phaseBadge">🔥 发作期</span>
+      <span style="font-size:12px;color:var(--text-muted);margin-left:8px;" id="phaseDesc">头屑多·发痒·掉屑</span>
+    </div>
+    <button onclick="togglePhase()" style="font-size:12px;background:none;border:1px solid var(--border);border-radius:var(--radius-xs);padding:6px 12px;cursor:pointer;color:var(--text-muted);">
+      切换阶段
+    </button>
+  </div>
+
+  <!-- ===== 洗头打卡 ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--primary-light);">🧴</div>
+      <div>
+        <div class="section-title">洗头打卡</div>
+        <div class="section-subtitle">酮康唑 ↔ 二硫化硒 隔天交替</div>
+      </div>
+    </div>
+
+    <!-- Person Tabs -->
+    <div class="person-tabs">
+      <button class="person-tab active" onclick="switchPerson('me')">👩 然然</button>
+      <button class="person-tab" onclick="switchPerson('him')">👨 牛牛🐮</button>
+    </div>
+
+    <!-- Today's wash status -->
+    <div style="margin-bottom:12px;">
+      <span class="today-badge" id="todayWashBadge" style="display:none;">✅ 今日已打卡</span>
+      <span style="font-size:13px;color:var(--text-muted);" id="todayWashHint"></span>
+    </div>
+
+    <!-- Wash buttons -->
+    <div class="wash-buttons" id="washButtons">
+      <button class="wash-btn keto" onclick="checkWash('keto')">
+        <span class="label">🧪 酮康唑洗剂</span>
+        <span class="desc">采乐 / 康王 · 停留5分钟</span>
+      </button>
+      <button class="wash-btn selenium" onclick="checkWash('selenium')">
+        <span class="label">🟡 二硫化硒洗剂</span>
+        <span class="desc">希尔生 · 停留3-5分钟</span>
+      </button>
+      <button class="wash-btn mild" onclick="checkWash('mild')">
+        <span class="label">🧼 温和去屑洗发水</span>
+        <span class="desc">日常清洁 · 不用药</span>
+      </button>
+      <button class="wash-btn water" onclick="checkWash('water')">
+        <span class="label">💧 温水冲头皮</span>
+        <span class="desc">过渡天 · 冲浮油即可</span>
+      </button>
+    </div>
+
+    <!-- Wash log -->
+    <div style="margin-top:6px;font-size:12px;color:var(--text-muted);" id="washLog">
+      最近洗头记录：暂无
+    </div>
+  </div>
+
+  <!-- ===== 每日任务清单 ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--accent-light);">📋</div>
+      <div>
+        <div class="section-title">今日任务清单</div>
+        <div class="section-subtitle">每完成一项就点一下 ✅</div>
+      </div>
+    </div>
+    <div class="task-list" id="taskList"></div>
+  </div>
+
+  <!-- ===== 枕巾 & 床品追踪 ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--warning-light);">🛏️</div>
+      <div>
+        <div class="section-title">枕巾 & 床品更换追踪</div>
+        <div class="section-subtitle">枕巾2-3天 · 床品每周 · 除螨每周</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div style="text-align:center;padding:12px;background:#fdfcfb;border-radius:var(--radius-sm);border:1px solid var(--border);">
+        <div style="font-size:28px;">🛏️</div>
+        <div style="font-size:13px;font-weight:700;margin-top:4px;">枕巾</div>
+        <div style="font-size:12px;color:var(--text-muted);" id="pillowStatus">待更换</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:#fdfcfb;border-radius:var(--radius-sm);border:1px solid var(--border);">
+        <div style="font-size:28px;">🛌</div>
+        <div style="font-size:13px;font-weight:700;margin-top:4px;">床单被罩</div>
+        <div style="font-size:12px;color:var(--text-muted);" id="bedStatus">待清洗</div>
+      </div>
+    </div>
+
+    <button onclick="changePillow()" style="width:100%;padding:12px;border-radius:var(--radius-sm);border:2px solid var(--accent);background:var(--accent-light);color:var(--accent);font-size:14px;font-weight:700;cursor:pointer;">
+      🧺 我今天换了枕巾！
+    </button>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button onclick="cleanBed()" style="flex:1;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--primary);background:var(--primary-light);color:var(--primary);font-size:13px;font-weight:700;cursor:pointer;">
+        🧹 大清洁 + 除螨
+      </button>
+      <button onclick="miteClean()" style="flex:1;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--primary);background:var(--primary-light);color:var(--primary);font-size:13px;font-weight:700;cursor:pointer;">
+        🔫 除螨仪清理
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== 用药进度环 ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--primary-light);">📊</div>
+      <div>
+        <div class="section-title">2个月治疗进度</div>
+        <div class="section-subtitle">目标：连续规范洗护 60 天</div>
+      </div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-ring">
+        <svg width="60" height="60" viewBox="0 0 60 60">
+          <circle class="bg" cx="30" cy="30" r="25"/>
+          <circle class="fg" id="progressCircle" cx="30" cy="30" r="25"
+            stroke-dasharray="157" stroke-dashoffset="157"/>
+        </svg>
+        <div class="text" id="progressPercent">0%</div>
+      </div>
+      <div class="progress-info">
+        <div>已坚持 <strong id="progressDays">0</strong> / 60 天</div>
+        <div style="font-size:12px;">💡 建议发作期至少坚持 2 个月</div>
+        <div style="font-size:12px;">好转后每周 1 次酮康唑巩固 1 个月</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 攻略速查 ===== -->
+  <div class="section">
+    <button class="guide-toggle" onclick="toggleGuide()">
+      📖 攻略速查
+      <span id="guideArrow">▾</span>
+    </button>
+    <div class="guide-content" id="guideContent">
+      <div class="rule"><span class="num">1</span>两人同步：酮康唑 + 二硫化硒交替，隔天洗</div>
+      <div class="rule"><span class="num">2</span>洗发水起泡后停留 5 分钟再冲掉</div>
+      <div class="rule"><span class="num">3</span>护发素只抹发梢，不碰头皮</div>
+      <div class="rule"><span class="num">4</span>枕头分开！每人专属枕头，不共用</div>
+      <div class="rule"><span class="num">5</span>枕巾 2-3 天一换，洗后暴晒</div>
+      <div class="rule"><span class="num">6</span>梳子/毛巾/发圈 绝对分开</div>
+      <div class="rule"><span class="num">7</span>摸完头发挠完头要洗手</div>
+      <div class="rule"><span class="num">8</span>头发彻底吹干再睡觉</div>
+      <div class="rule"><span class="num">9</span>少吃高糖/油炸/奶茶/辛辣</div>
+      <div class="rule"><span class="num">10</span>两人都吃复合维生素B族</div>
+      <div class="rule"><span class="num">11</span>牛牛的枕头区每周除螨仪吸一遍</div>
+      <div class="rule"><span class="num">12</span>阿贝贝玩偶不让牛牛碰！</div>
+    </div>
+  </div>
+
+  <!-- Reset -->
+  <div class="reset-area">
+    <button class="reset-btn" onclick="resetAll()">🔄 重置所有打卡数据</button>
+  </div>
+
+</div>
+
+<script>
+// ==================== State ====================
+const STORAGE_KEY = 'anti-fungal-tracker-v2';
+
+let state = loadState();
+
+function defaultState() {
+  return {
+    phase: 'acute', // 'acute' | 'remission'
+    currentPerson: 'me',
+
+    // Wash records: { 'YYYY-MM-DD': { me: 'keto'|'selenium'|'mild'|'water', him: ... } }
+    washRecords: {},
+
+    // Task completions: { 'YYYY-MM-DD': { taskId: true, ... } }
+    taskRecords: {},
+
+    // Bedding records
+    pillowLastChanged: null, // ISO date
+    bedLastCleaned: null,
+    miteLastCleaned: null,
+
+    // Daily check-in records: Set of dates where at least 1 thing was done
+    checkedInDates: {},
+
+    // Log
+    activityLog: [], // { date, person, action }
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return defaultState();
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// ==================== Helpers ====================
+function today() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  return `${d.getMonth()+1}/${d.getDate()}`;
+}
+
+function daysBetween(d1, d2) {
+  return Math.floor((new Date(d2) - new Date(d1)) / 86400000);
+}
+
+function daysAgo(dateStr) {
+  return daysBetween(dateStr, today());
+}
+
+// ==================== Streaks ====================
+function calcStreaks() {
+  const dates = Object.keys(state.checkedInDates).sort();
+  if (dates.length === 0) return { total: 0, consecutive: 0 };
+
+  let consecutive = 0;
+  const t = today();
+  // Count backwards from today
+  let check = t;
+  while (state.checkedInDates[check]) {
+    consecutive++;
+    const d = new Date(check + 'T00:00:00');
+    d.setDate(d.getDate() - 1);
+    check = d.toISOString().slice(0, 10);
+  }
+
+  return { total: dates.length, consecutive };
+}
+
+function markCheckedIn() {
+  state.checkedInDates[today()] = true;
+  saveState();
+  updateUI();
+}
+
+// ==================== Wash ====================
+function switchPerson(person) {
+  state.currentPerson = person;
+  saveState();
+  updateWashUI();
+}
+
+function checkWash(type) {
+  const date = today();
+  if (!state.washRecords[date]) state.washRecords[date] = {};
+  state.washRecords[date][state.currentPerson] = type;
+
+  const personLabel = state.currentPerson === 'me' ? '然然' : '牛牛';
+  const typeLabel = { keto: '酮康唑', selenium: '二硫化硒', mild: '温和去屑', water: '温水冲' }[type];
+  state.activityLog.unshift({ date, person: state.currentPerson, action: `🧴 ${personLabel}用了${typeLabel}` });
+  if (state.activityLog.length > 50) state.activityLog.length = 50;
+
+  markCheckedIn();
+  showToast(state.currentPerson === 'me' ? '✅ 然然洗头打卡成功！' : '✅ 帮牛牛记下了！');
+  celebrate();
+
+  updateWashUI();
+}
+
+// ==================== Tasks ====================
+const TASKS = [
+  { id: 'blowdry', emoji: '💨', name: '头发彻底吹干再睡', detail: '湿发 = 真菌温床！', badge: '每晚' },
+  { id: 'handwash', emoji: '🧼', name: '挠/摸头发后洗手', detail: '阻断真菌传到床品玩偶', badge: '每次' },
+  { id: 'vitamin', emoji: '💊', name: '吃复合维生素B族', detail: '调节头皮油脂分泌', badge: '每天' },
+  { id: 'pillow_separate', emoji: '🛏️', name: '确认枕头分开使用', detail: '不共用不头挨头', badge: '每天' },
+  { id: 'doll_safe', emoji: '🧸', name: '阿贝贝安全区检查', detail: '牛牛没碰玩偶吧？', badge: '每天' },
+  { id: 'diet', emoji: '🥗', name: '控糖油 · 不熬夜', detail: '少甜食油炸奶茶辛辣', badge: '每天' },
+  { id: 'comb_separate', emoji: '🪮', name: '梳子毛巾分开用', detail: '个人用品不互借', badge: '每天' },
+  { id: 'no_touch', emoji: '🚫', name: '不贴头蹭头摸头', detail: '最直接的传染途径', badge: '注意' },
+];
+
+function toggleTask(taskId) {
+  const date = today();
+  if (!state.taskRecords[date]) state.taskRecords[date] = {};
+  state.taskRecords[date][taskId] = !state.taskRecords[date][taskId];
+
+  markCheckedIn();
+
+  const task = TASKS.find(t => t.id === taskId);
+  if (state.taskRecords[date][taskId]) {
+    celebrate();
+    showToast(`✅ ${task.name} 完成！`);
+  }
+  updateTaskUI();
+}
+
+function getCompletedCount() {
+  const date = today();
+  const rec = state.taskRecords[date] || {};
+  return Object.values(rec).filter(Boolean).length;
+}
+
+// ==================== Bedding ====================
+function changePillow() {
+  state.pillowLastChanged = today();
+  markCheckedIn();
+  celebrate();
+  showToast('🧺 枕巾已更换！记得暴晒哦 ☀️');
+  updateBeddingUI();
+}
+
+function cleanBed() {
+  state.bedLastCleaned = today();
+  state.miteLastCleaned = today(); // often done together
+  markCheckedIn();
+  celebrate();
+  showToast('🧹 大清洁完成！床单被罩 + 除螨 ✅');
+  updateBeddingUI();
+}
+
+function miteClean() {
+  state.miteLastCleaned = today();
+  markCheckedIn();
+  showToast('🔫 除螨仪清理完成！');
+  updateBeddingUI();
+}
+
+function updateBeddingUI() {
+  // Pillow
+  const pillowDays = state.pillowLastChanged ? daysAgo(state.pillowLastChanged) : 999;
+  const pillowEl = document.getElementById('pillowStatus');
+  if (pillowDays === 0) pillowEl.textContent = '今天刚换 ✨';
+  else if (pillowDays === 1) pillowEl.textContent = '已用 1 天';
+  else if (pillowDays === 2) pillowEl.textContent = '已用 2 天 ⚠️ 该换了';
+  else pillowEl.textContent = `已用 ${pillowDays} 天 🔴 快换！`;
+
+  // Bed
+  const bedDays = state.bedLastCleaned ? daysAgo(state.bedLastCleaned) : 999;
+  const bedEl = document.getElementById('bedStatus');
+  if (bedDays === 0) bedEl.textContent = '今天刚清洗 ✨';
+  else bedEl.textContent = `上次清洗 ${bedDays} 天前`;
+
+  saveState();
+}
+
+// ==================== Phase ====================
+function togglePhase() {
+  state.phase = state.phase === 'acute' ? 'remission' : 'acute';
+  saveState();
+  updatePhaseUI();
+}
+
+function updatePhaseUI() {
+  const badge = document.getElementById('phaseBadge');
+  const desc = document.getElementById('phaseDesc');
+  if (state.phase === 'acute') {
+    badge.className = 'phase-badge acute';
+    badge.textContent = '🔥 发作期';
+    desc.textContent = '头屑多·发痒·掉屑 → 隔天交替洗';
+  } else {
+    badge.className = 'phase-badge remission';
+    badge.textContent = '🌿 缓解期';
+    desc.textContent = '头屑变少·不痒 → 每周1次酮康唑巩固';
+  }
+}
+
+// ==================== Progress ====================
+function updateProgress() {
+  const days = Object.keys(state.checkedInDates).length;
+  const pct = Math.min(100, Math.round((days / 60) * 100));
+
+  document.getElementById('progressDays').textContent = days;
+  document.getElementById('progressPercent').textContent = pct + '%';
+
+  const circle = document.getElementById('progressCircle');
+  const circumference = 157; // 2 * PI * 25
+  const offset = circumference - (pct / 100) * circumference;
+  circle.setAttribute('stroke-dashoffset', offset);
+}
+
+// ==================== Streak Banner ====================
+function updateStreaks() {
+  const { total, consecutive } = calcStreaks();
+
+  document.getElementById('streakDays').textContent = total;
+  document.getElementById('streakConsecutive').textContent = consecutive;
+
+  let msg;
+  if (consecutive >= 30) msg = '🌟 你太棒了！坚持一个月啦！';
+  else if (consecutive >= 14) msg = '🔥 两周不间断，真菌在发抖！';
+  else if (consecutive >= 7) msg = '💪 一周全勤！头皮在慢慢好起来~';
+  else if (consecutive >= 3) msg = '👏 连续打卡中，保持住！';
+  else if (total >= 1) msg = '🌱 好的开始是成功的一半！';
+  else msg = '🫶 今天开始，一起加油！';
+  document.getElementById('streakMsg').textContent = msg;
+}
+
+// ==================== Wash UI ====================
+function updateWashUI() {
+  // Person tabs
+  document.querySelectorAll('.person-tab').forEach(tab => {
+    const isMe = tab.textContent.includes('然然');
+    tab.classList.toggle('active', (isMe && state.currentPerson === 'me') || (!isMe && state.currentPerson === 'him'));
+  });
+
+  // Wash buttons
+  const date = today();
+  const rec = state.washRecords[date] || {};
+  const done = rec[state.currentPerson];
+
+  document.querySelectorAll('.wash-btn').forEach(btn => btn.classList.remove('checked'));
+
+  if (done) {
+    document.getElementById('todayWashBadge').style.display = 'inline-block';
+    document.getElementById('todayWashHint').textContent = '';
+    // Highlight the button that was clicked
+    const labels = { keto: '酮康唑', selenium: '二硫化硒', mild: '温和去屑', water: '温水冲' };
+    document.querySelectorAll('.wash-btn').forEach(btn => {
+      if (btn.querySelector('.label').textContent.includes(labels[done])) {
+        btn.classList.add('checked');
+      }
+    });
+  } else {
+    document.getElementById('todayWashBadge').style.display = 'none';
+    document.getElementById('todayWashHint').textContent = state.currentPerson === 'me' ? '👇 然然选今天的洗头方式' : '👇 帮牛牛记录今天的洗头方式';
+  }
+
+  // Wash log
+  const logs = state.activityLog.filter(l => l.action.startsWith('🧴')).slice(0, 6);
+  const logEl = document.getElementById('washLog');
+  if (logs.length === 0) {
+    logEl.textContent = '最近洗头记录：暂无';
+  } else {
+    logEl.innerHTML = '最近记录：' + logs.map(l =>
+      `<span style="display:inline-block;margin-right:8px;">${formatDate(l.date)} ${l.action}</span>`
+    ).join('');
+  }
+
+  saveState();
+}
+
+// ==================== Task UI ====================
+function updateTaskUI() {
+  const date = today();
+  const rec = state.taskRecords[date] || {};
+  const done = getCompletedCount();
+
+  const listEl = document.getElementById('taskList');
+  listEl.innerHTML = TASKS.map(t => {
+    const completed = !!rec[t.id];
+    return `
+      <div class="task-item${completed ? ' completed' : ''}" onclick="toggleTask('${t.id}')">
+        <div class="checkbox">${completed ? '✓' : ''}</div>
+        <span class="task-emoji">${t.emoji}</span>
+        <div class="task-info">
+          <div class="task-name">${t.name}</div>
+          <div class="task-detail">${t.detail}</div>
+        </div>
+        <span class="task-badge">${t.badge}</span>
+      </div>
+    `;
+  }).join('');
+
+  // Update section subtitle
+  const subtitle = document.querySelector('#taskList').parentElement.parentElement.querySelector('.section-subtitle');
+  if (subtitle) {
+    subtitle.textContent = done >= TASKS.length
+      ? '🎉 全部完成！今天完美！'
+      : `已完成 ${done}/${TASKS.length} 项`;
+  }
+
+  saveState();
+}
+
+// ==================== Toast & Celebrate ====================
+let toastTimer;
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function celebrate() {
+  const colors = ['#e07a5f','#81b29a','#f2cc8f','#667eea','#f4a261','#e76f51','#2a9d8f'];
+  const wrapper = document.getElementById('confetti');
+
+  for (let i = 0; i < 30; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.top = -(Math.random() * 20 + 10) + 'px';
+    piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = Math.random() * 0.5 + 's';
+    piece.style.width = (Math.random() * 8 + 6) + 'px';
+    piece.style.height = (Math.random() * 8 + 6) + 'px';
+    wrapper.appendChild(piece);
+
+    setTimeout(() => piece.remove(), 3000);
+  }
+}
+
+// ==================== Guide Toggle ====================
+function toggleGuide() {
+  const content = document.getElementById('guideContent');
+  const arrow = document.getElementById('guideArrow');
+  content.classList.toggle('open');
+  arrow.textContent = content.classList.contains('open') ? '▴' : '▾';
+}
+
+// ==================== Reset ====================
+function resetAll() {
+  if (confirm('确定要重置所有打卡数据吗？此操作不可恢复！')) {
+    state = defaultState();
+    saveState();
+    updateUI();
+    showToast('🔄 数据已重置，重新开始吧！');
+  }
+}
+
+// ==================== Main Update ====================
+function updateUI() {
+  updateStreaks();
+  updatePhaseUI();
+  updateWashUI();
+  updateTaskUI();
+  updateBeddingUI();
+  updateProgress();
+}
+
+// ==================== Init ====================
+updateUI();
+
+// Auto-reset check: if it's a new day, task UI auto-updates (no old data cleanup needed, we use date-keyed records)
+// Check midnight refresh
+setInterval(() => {
+  // Re-render in case day changed
+  updateUI();
+}, 60000);
+
+console.log('🛡️ 抗马拉色菌作战计划已就绪！');
+console.log('📋 攻略来源：豆包 AI 助手');
+console.log('💊 核心：酮康唑 + 二硫化硒交替洗头 × 2个月 × 两人同步');
+console.log('🔑 关键：用品隔离 + 枕巾勤换 + 不贴头蹭头');
+console.log('💪 然然 & 牛牛 加油！1个月见效，2个月断根！');
+</script>
+</body>
+</html>
